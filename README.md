@@ -7,12 +7,14 @@ The initial version (released late 2023) tests solely "all core" DGEMM performan
 ## How do?
 
 ### easy mode: 
+
 1. open the Xcode project,
 2. build
 3. provide the amount of memory in GBs your device has, followed by hitting return/enter
 4. post your results *and* your device config!!!
 
 ### Slightly harder: 
+
 1. open your terminal 
 2. git clone this repo
 3. navigate to main.swift 
@@ -27,7 +29,9 @@ format should be: device year, device model, device CPU config, device memory co
 ex: 2023, Macbook Pro 16 inch, M3Max, 128GB. 
 
 ###if you're not sure: 
+
 ####About this Mac 
+
     1. move your cursor to the top left of the screen
     2. click the small apple logo 
     3. click about this mac
