@@ -22,10 +22,10 @@ import Accelerate
 /*
  We care about 3 spans of intervals for performance metrics.
  Specifically:
-  
+ 
  1. Powers of 10; 10^N because silly little humans, especially in the west
  are taught to think in terms of, and use, Base10
-  
+ 
  2. Powers of 2; 2^N because silly little computers, especially the modern
  ones, are almost always Base 2 systems, driving design decisions in caches,
  base WORD sizes, FPU length etc.
@@ -37,34 +37,33 @@ import Accelerate
  3, 5, 7, five is already part of Base10 covered in 2, and 7 is just boring.
  
  
-*/
- 
-//macOS crashes completely on allocs that big
- 
-//Print something welcoming
-print("Lets brew some cider, hopefully not vinegar!")
- 
- 
+ */
+
 //Greet the user because we're nice peopleTM
- 
+print("Lets brew some cider, hopefully not vinegar!")
+
+
 //Have the user tell us how much ram they have; I don't want to deal with
 // sysctl() for my first swift app
 print("Welcome! How many GBs of memory are in your Orchard?", terminator: "")
 print("")
  
 var memsize: Int64 = 0
- 
+// needs to be a 64 bit int when we convert to bytes
+
+
 if let input = readLine() {
     if let number = Int64(input) {
         let bytes_available = number * 1000000000
+        // Gigabytes to Bytes
+        
         print("You entered \(number) GB")
-       // print("That's \(result) Bytes")
         memsize = bytes_available
     }
     else{
         print("Why you trying to break the app?!? (╯°□°）╯︵ ┻━┻")
-        exit(0)
-         
+        exit(0) //on garbage input, scold the user with something playfull
+        
     }
 }
  
@@ -78,101 +77,105 @@ let powers: [Int32] = determine_Size(memory_capacity:memsize)
 var test_point: Int = 0     //loop counter
  
 var test_scope: Int = Int(powers[0]+powers[1]+powers[2])
- 
- 
-        //What power are we raising the dimensions of the
-        //square matrices we're going to create and solve
-//print(powers)
-//print(test_scope)
- 
- 
- 
- 
+//sum of the different tests.
+
+//NOTE: it feels like swift would have an integer array sum function built in.
+// something like the above would instead look like:
+//test_scope = powers.sum()
+
+
 var tests: [Int] = Array(repeating: 0, count: test_scope)
-                            //array of the various tests sizes we're going to
-                            //run
+//array sized to hold the various tests sizes we're going to run
+
 var results: [Double] = Array(repeating: 0, count: test_scope)
  
  
 while(test_point<powers[0]){
-     
-    //Base 2
+    
+    //Base 2 tests are incerted into tests[]
     tests[test_point] = 2<<test_point
      
     test_point+=1
     
-     }
- 
-test_point = 1
- 
-//print(tests)
+}
+
 tests.sort()
-//print(tests)
- 
- 
-//Base3
- 
-tests[0] = 3
- 
+//All the values in tests[] are > 0, effectively shifts base2 tests to the back
+
+//Base3 tests are incerted into tests[]
+
+
+tests[0] = 3 //first value
+
+test_point = 1 // start at the second value, since we refer to the second value
+//it's ugly compared to a recursive solution, but it's also stupid easy to read
+// for my silly C pilled brain
 while(test_point<powers[1]){
      
     tests[test_point] = 3*tests[test_point-1]
-         
+    
     test_point+=1
 }
-test_point = 1
- 
-//Base 10
-//print(tests)
+
 tests.sort()
-//print(tests)
+//All the values in tests[] are > 0, effectively shifts b2&b3 tests to the back
+
+//Base 10 tests are incerted into tests[]
+
 tests[0] = 10
- 
+
+test_point = 1 // start at the second value, since we refer to the second value
+//it's ugly compared to a recursive solution, but it's also stupid easy to read
+// for my silly C pilled brain
+
+
+
 while(test_point<powers[2]){
      
     tests[test_point] = 10*tests[test_point-1]
-         
+    
     test_point+=1
 }
- 
-//print(tests)
+
+// lets actually sort them now
 tests.sort()
-//print(tests)
- 
-  
- test_point+=1
- 
-// once we have all 3 types, sort them here
- 
-tests.sort()
+
 print("Running the following tests:",tests)
- 
+
+
 test_point = 0 //reset counter
 //allocate the arrays to be of maximum size:
- 
+
 let matrix_size: Int = tests[test_scope-1]*tests[test_scope-1]
 let matrix_dimensions: Int32 = Int32(tests[test_point])
-//some sort of alocation
+
 var mat_A: [Double] = Array<Double>(repeating: 0.0, count: matrix_size)
 var mat_B: [Double] = Array<Double>(repeating: 0.0, count: matrix_size)
 var mat_C: [Double] = Array<Double>(repeating: 0.0, count: matrix_size)
- 
-var i = 0
- 
+
+
+// fill the array with random data
 print("Filling the matrices with random data, this may take a while...")
- 
+
+var i = 0
+
 while(i<matrix_size)
 {
     mat_C[i] = Double.random(in: 2.71828...3.14159)
     mat_B[i] = mat_C[i] + 1
     mat_A[i] = 2*mat_B[i]
+    i += 1
+    // if you want you can comment out the mat_B and mat_A lines above
+    //and instead uncomment the two below for full "random" data
+    
+    //                  THIS IS REALLY SLOW!!!!
+    
     //mat_B[i] = Double.random(in: 2.71828...3.14159)
     //mat_A[i] = Double.random(in: 2.71828...3.14159)
-    i += 1
-    // THIS IS REALLY SLOW
-     
+    
 }
-//print("finished filling matrix of size", matrix_size, "with data")
+
+// let the system cool down for a moment
 print("taking 10 seconds to avoid SOC hot spotting, normalizing clocks etc.")
 print("")
 sleep(10)
@@ -183,51 +186,52 @@ sleep(10)
 repeat{
      
     let matrix_dimensions: Int32 = Int32(tests[test_point])
-     
-    //swift array notation is weird, not sure how much of that is me, how much
-    // is the lang?
-   // print("finished allocating matrix of size", matrix_size)
-     
-    // fill with random data
-    //preferred notation seems to be mat_Z = [[TYPE]],
-    //but that doesn't bound at compile time?
-     
-     
+    
     //timer start
     let start = DispatchTime.now()
-     
- 
+    
+    
     //call accelerate
-    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, matrix_dimensions, matrix_dimensions, matrix_dimensions, 1.0, &mat_A, matrix_dimensions, &mat_B, matrix_dimensions, 1.0, &mat_C, matrix_dimensions)
-                // DGEMM AKA IEEE 754 Binary64 generalized
-                // matrix multiply.
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, matrix_dimensions,
+                matrix_dimensions, matrix_dimensions, 1.0, &mat_A,
+                matrix_dimensions, &mat_B, matrix_dimensions, 1.0,
+                &mat_C, matrix_dimensions)
+    
+    // DGEMM AKA IEEE 754 Binary64 generalized
+    // matrix multiply.
+    
+    //timer end
     let end = DispatchTime.now()
-     
-    let delta:Double = Double((end.uptimeNanoseconds - start.uptimeNanoseconds))
-     
-    //print("took",delta, "to do nothing")
-     
-    let edge:Double = Double(matrix_dimensions)
-     
-    let Gflops:Double = Double(edge*edge*edge) / ( Double(delta))
+    
+    
+    //delta between end and start
+    let delta = Double((end.uptimeNanoseconds - start.uptimeNanoseconds))
+    
+    // for calculating GFLOPS
+    let edge = Double(matrix_dimensions)
+    
+    // Calculate GFLOPS
+    let Gflops = Double(edge*edge*edge) / ( Double(delta))
     // convenient thing: if you're outputing in Gflops you don't have to change
     // the units of a nanosecond timer: both are 10^9 and cancel out
      
     results[test_point]=Gflops
-     
-    //print("Since GEMM is an N^3 algorithm, we can divide", edge,"cubed by", delta," to calculate Gflops")
-     
+    
     print("For {n=m=k}=",matrix_dimensions, " performance is ", Gflops, "GFLOPS")
-     
+    
     //end timer, then convert time and size of matrix to Gflops
- 
+    
+    
+    //take a break before doing the next matrix size
     sleep(1)
      
      
     test_point += 1
-}while(test_point < test_scope)
- 
- 
+}while(test_point < test_scope) //do while loop in swift is repeat{}while()
+
+
+// human facing dialog
+
 print("Lower than you thought? Maybe consider a different kind of Apple?")
 print("Up to the task? Enjoy a nice refreshing brew; you've earned it!")
 print("")
@@ -236,25 +240,25 @@ print("(typically under the name @FCLC or @FelixCLC on most platforms)")
 print("")
 print(tests)
 print(results)
- 
- 
+
+
+
+// how to do functions in Swift
 func determine_Size(memory_capacity: Int64)-> [Int32] {
- 
-    //use user input of memory capacity to calculate max bounds for matricies
-    //
-     
+    
+    //use user input of memory capacity to calculate max bounds for matrices
+    
     var matrix_dimensions: Int64 = Int64(memory_capacity)
      
     matrix_dimensions = matrix_dimensions/8
- //   print(matrix_dimensions)
-        // of 64 bits / 8 bytes
+    // 64 bits / 8 bytes give Bytes to entries
     matrix_dimensions = matrix_dimensions/3
- //   print(matrix_dimensions)
-        // 3 arrays
+    // 3 arrays, so / 3
     matrix_dimensions = Int64(Double (matrix_dimensions).squareRoot())
- //   print(matrix_dimensions)
-        // from which we want the linear dimensions
-     
+    // we want N from NxN, so invert to root(N)
+    
+    // array of 3 entries, one for each of the max powers to raise for {2,3,10}
+    
     var powers: [Int32] = Array(repeating: 0, count: 3)
     // Power of 2:
     powers[0] = Int32(log2(Double (matrix_dimensions)))
@@ -272,6 +276,6 @@ func determine_Size(memory_capacity: Int64)-> [Int32] {
      
     return powers
 }
- 
- 
- 
+
+
+
