@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		DC421B592B32751A00CD3265 /* AdvancedCiderXtensions */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AdvancedCiderXtensions; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC421B5C2B32751A00CD3265 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		DCDFA0E72B3D40F200AA9318 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				DC421B5C2B32751A00CD3265 /* main.swift */,
+				DCDFA0E72B3D40F200AA9318 /* README.md */,
 			);
 			path = AdvancedCiderXtensions;
 			sourceTree = "<group>";
@@ -183,7 +185,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Debug;
 		};
@@ -237,7 +239,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};
