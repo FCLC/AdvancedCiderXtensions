@@ -4,21 +4,25 @@
 //
 //  Created by FelixCLC on 2023-12-19.
 //
+//  License=MIT
+//
+//  reach me at @fclc@mast.hpc.social
+
 import Foundation
 import Accelerate
- 
+
 /*
  This is a silly little app to check out the DGEMM, SGEMM, and eventually
  BGEMM, HGEMM  QGEMM performance of various SoCs supported by apple and their
  performance under accelerate.
-  
+ 
  hardware features means that sometimes accelerate will use AVX {1,2,512f}
  Other times it will use NEON/ASIMD, sometimes {TOP SECRET THING THAT ISN'T
  A SECRET AT ALL}, and sometime in the future, hopefully SVE, streaming SVE
  and the big one, SME
-  
- */
  
+ */
+
 /*
  We care about 3 spans of intervals for performance metrics.
  Specifically:
@@ -29,7 +33,7 @@ import Accelerate
  2. Powers of 2; 2^N because silly little computers, especially the modern
  ones, are almost always Base 2 systems, driving design decisions in caches,
  base WORD sizes, FPU length etc.
-  
+ 
  3. Powers of some prime between 2 and 10, so that we get a sense of things
  that don't line up particularly well for optimizations commonly made between
  Algs designed for points 1 and 2.
@@ -47,7 +51,7 @@ print("Lets brew some cider, hopefully not vinegar!")
 // sysctl() for my first swift app
 print("Welcome! How many GBs of memory are in your Orchard?", terminator: "")
 print("")
- 
+
 var memsize: Int64 = 0
 // needs to be a 64 bit int when we convert to bytes
 
@@ -66,35 +70,44 @@ if let input = readLine() {
         
     }
 }
- 
+
 let powers: [Int32] = determine_Size(memory_capacity:memsize)
 //array of 3 entries. Those entries are the powers to which we can raise
 //while staying within the machines memory footprint
- 
- 
- 
- 
-var test_point: Int = 0     //loop counter
- 
-var test_scope: Int = Int(powers[0]+powers[1]+powers[2])
-//sum of the different tests.
 
-//NOTE: it feels like swift would have an integer array sum function built in.
-// something like the above would instead look like:
-//test_scope = powers.sum()
 
+
+
+var test_point: Int = 0
+
+//loop counter declaration
+
+var test_scope:Int = Int(powers.reduce(0, +))
+//total number of tests.
+
+/*
+ NOTE: it feels like swift would have an integer array sum function built in.
+ 
+ something like the above would instead look like:
+ test_scope = powers.sum()
+ 
+ the closest equivalent is a rather nice pattern of array.reduce(0.+)
+ it comes courtesy of @fay59@tech.lgbt, @fracai@mastodon.social,
+ and @samwich@mastodon.social on mastodon/the fediverse
+
+ */
 
 var tests: [Int] = Array(repeating: 0, count: test_scope)
 //array sized to hold the various tests sizes we're going to run
 
 var results: [Double] = Array(repeating: 0, count: test_scope)
- 
- 
+
+
 while(test_point<powers[0]){
     
     //Base 2 tests are incerted into tests[]
     tests[test_point] = 2<<test_point
-     
+    
     test_point+=1
     
 }
@@ -111,7 +124,7 @@ test_point = 1 // start at the second value, since we refer to the second value
 //it's ugly compared to a recursive solution, but it's also stupid easy to read
 // for my silly C pilled brain
 while(test_point<powers[1]){
-     
+    
     tests[test_point] = 3*tests[test_point-1]
     
     test_point+=1
@@ -131,7 +144,7 @@ test_point = 1 // start at the second value, since we refer to the second value
 
 
 while(test_point<powers[2]){
-     
+    
     tests[test_point] = 10*tests[test_point-1]
     
     test_point+=1
@@ -179,12 +192,12 @@ while(i<matrix_size)
 print("taking 10 seconds to avoid SOC hot spotting, normalizing clocks etc.")
 print("")
 sleep(10)
- 
- 
- 
- 
+
+
+
+
 repeat{
-     
+    
     let matrix_dimensions: Int32 = Int32(tests[test_point])
     
     //timer start
@@ -218,7 +231,7 @@ repeat{
     
     // convenient thing: if you're outputing in Gflops you don't have to change
     // the units of a nanosecond timer: both are 10^9 and cancel out
-     
+    
     results[test_point]=Gflops
     
     print("For {n=m=k}=",matrix_dimensions, " performance is ", Gflops, "GFLOPS")
@@ -228,8 +241,8 @@ repeat{
     
     //take a break before doing the next matrix size
     sleep(1)
-     
-     
+    
+    
     test_point += 1
 }while(test_point < test_scope) //do while loop in swift is repeat{}while()
 
@@ -253,7 +266,7 @@ func determine_Size(memory_capacity: Int64)-> [Int32] {
     //use user input of memory capacity to calculate max bounds for matrices
     
     var matrix_dimensions: Int64 = Int64(memory_capacity)
-     
+    
     matrix_dimensions = matrix_dimensions/8
     // 64 bits / 8 bytes give Bytes to entries
     matrix_dimensions = matrix_dimensions/3
@@ -266,18 +279,18 @@ func determine_Size(memory_capacity: Int64)-> [Int32] {
     var powers: [Int32] = Array(repeating: 0, count: 3)
     // Power of 2:
     powers[0] = Int32(log2(Double (matrix_dimensions)))
-     
+    
     // Note: Swift doesn't have a clean power of X function AFAIK
     // since LogB(x) = LogD(x)/LogD(B) we can do: log(val)/log(NEW BASE)
-     
+    
     //Throwback to Madame I. Turcot, forever my goated math prof *o7*
-     
+    
     // Power of 3:
     powers[1] = Int32(log2(Double (matrix_dimensions))/log2(3.0))
     // Power of 10
     powers[2] = Int32(log2(Double (matrix_dimensions))/log2(10.0))
-     
-     
+    
+    
     return powers
 }
 
