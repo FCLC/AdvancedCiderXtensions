@@ -19,7 +19,7 @@ The initial version (released late 2023) tests solely "all core" DGEMM performan
 2. git clone this repo
 3. navigate to main.swift 
 4. `swiftc main.swift -o a.out -O`
-5. ./a.out 
+5. `./a.out` 
 6. enter amount of memory on device when prompted
 7. post your results *and* your device config!!!
 
