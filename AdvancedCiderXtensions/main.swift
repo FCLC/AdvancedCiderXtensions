@@ -192,7 +192,7 @@ repeat{
     
     
     //call accelerate
-    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, matrix_dimensions,
+    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasTrans, matrix_dimensions,
                 matrix_dimensions, matrix_dimensions, 1.0, &mat_A,
                 matrix_dimensions, &mat_B, matrix_dimensions, 1.0,
                 &mat_C, matrix_dimensions)
@@ -211,7 +211,11 @@ repeat{
     let edge = Double(matrix_dimensions)
     
     // Calculate GFLOPS
-    let Gflops = Double(edge*edge*edge) / ( Double(delta))
+    let Gflops = 2.0*Double(edge*edge*edge) / ( Double(delta))
+    
+    // we multiply by 2 since technically N^3 is the FMA complexity, but
+    // convension dictates that an FMA is 2 operations, a multiply and an add
+    
     // convenient thing: if you're outputing in Gflops you don't have to change
     // the units of a nanosecond timer: both are 10^9 and cancel out
      
