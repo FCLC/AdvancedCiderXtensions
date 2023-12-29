@@ -28,9 +28,9 @@ the last 2 lines as indicated in the program and the device you ran this on.
 format should be: device year, device model, device CPU config, device memory config 
 ex: 2023, Macbook Pro 16 inch, M3Max, 128GB. 
 
-###if you're not sure: 
+### if you're not sure: 
 
-####About this Mac 
+#### About this Mac 
 
     1. move your cursor to the top left of the screen
     2. click the small apple logo 
