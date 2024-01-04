@@ -76,6 +76,12 @@ Because DGEMM is defined as `C[][]=A[][]*B[][] + C[][]` we know we need 3 arrays
 
 So data points per array = total data points divided by 3
 
+However, based on feedback and wanting to maximize ease of use, we divide by 4 instead. 
+
+This is mainly to do with how an optimal BLAS GEMM implementation will require transposition of the B matrix. 
+
+As scuh, instead we divide by 4 to allow for transposition headroom on top of the space required for the kernel, the desktop enviroment etc.
+
 And since we're looking for the edge dimensions of a square matrix, we can simply take the SquareRoot of data point per array
 
 Edge width = squareroot(data_point per array)

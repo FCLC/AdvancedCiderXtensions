@@ -94,7 +94,7 @@ var test_scope:Int = Int(powers.reduce(0, +))
  the closest equivalent is a rather nice pattern of array.reduce(0.+)
  it comes courtesy of @fay59@tech.lgbt, @fracai@mastodon.social,
  and @samwich@mastodon.social on mastodon/the fediverse
-
+ 
  */
 
 var tests: [Int] = Array(repeating: 0, count: test_scope)
@@ -269,8 +269,11 @@ func determine_Size(memory_capacity: Int64)-> [Int32] {
     
     matrix_dimensions = matrix_dimensions/8
     // 64 bits / 8 bytes give Bytes to entries
-    matrix_dimensions = matrix_dimensions/3
-    // 3 arrays, so / 3
+    matrix_dimensions = matrix_dimensions/4
+    // 3 arrays, so / 3 would be the typical idea here, but because of
+    // matrix transposition memory requirements, leaving space for the DE
+    // and the kernel (on top of other apps), it's better to leave additional
+    //margin
     matrix_dimensions = Int64(Double (matrix_dimensions).squareRoot())
     // we want N from NxN, so invert to root(N)
     
