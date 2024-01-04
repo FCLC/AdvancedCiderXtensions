@@ -16,8 +16,8 @@ The initial version (released late 2023) tests solely "all core" DGEMM performan
 ### Slightly harder: 
 
 1. open your terminal 
-2. git clone this repo
-3. navigate to main.swift 
+2. git clone this repo `git clone https://github.com/FCLC/AdvancedCiderXtensions.git`
+3. navigate to the directory (AKA folder) containing main.swift `cd AdvancedCiderXtensions/AdvancedCiderXtensions/`
 4. `swiftc main.swift -o a.out -O`
 5. `./a.out` 
 6. enter amount of memory on device when prompted
@@ -42,17 +42,21 @@ ex: 2023, Macbook Pro 16 inch, M3Max, 128GB.
     4.  A. take a screen shot of the relevant information WITHOUT YOUR SERIAL NUMBER
     4.  B. you can hit command+shift+4 to open up the mac screenshoting menu. 
     4.  C. this screen shot will be deposited on the desktop 
+    5. send your me results as well as the screen shot
 
 
 Full example from the machine I'm running this on: 
 ```
-
 [2, 3, 4, 8, 9, 10, 16, 27, 32, 64, 81, 100, 128, 243, 256, 512, 729, 1000, 1024, 2048, 2187, 4096, 6561, 8192, 10000, 16384, 19683]
 [0.00014707639699596458, 0.003494919422691088, 0.008749743659853716, 0.06790450928381962, 0.18623068080214586, 0.23637867864318637, 0.03283695761098306, 0.6306228373702422, 0.5864991363957723, 2.010221961497023, 5.162478264670741, 6.7476838575159075, 9.710475626018669, 23.529780147879944, 38.91564596658684, 27.516054481152043, 52.14393076879697, 87.7603223471744, 97.92763250176978, 102.69577127634074, 105.506825019667, 81.476686380203, 96.93331916634915, 93.60439988468656, 90.7582806546308, 85.63913456839335, 85.54126369380319]
 2015,Macbook Pro Retina 15'inch, 2.5 GHz Quad-Core Intel Core i7, 16 GBs'
 ```
 
+## Results! 
 
+I'm tracking the results in this issue: https://github.com/FCLC/AdvancedCiderXtensions/issues/1#issuecomment-1876239956 
+
+feel free to send your results there if you'd like, or otherwise reach out! 
 
 
 ## What are we actually doing? (the long technical part)
